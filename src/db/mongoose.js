@@ -24,6 +24,17 @@ const User = mongoose.model("User", {
       }
     },
   },
+  password: {
+    type: String,
+    required: true,
+    minlength: 7,
+    trim: true,
+    validate(value) {
+      if (value.toLowerCase().includes("password")) {
+        throw new Error("The password cannot contain the word password");
+      }
+    },
+  },
   age: {
     type: Number,
     default: 0,
@@ -35,30 +46,33 @@ const User = mongoose.model("User", {
   },
 });
 
-const me = new User({
-  name: "   Ayoub   ",
-  email: "  ayoubyf@gmail.com  ",
+// const me = new User({
+//   name: "   Ayoub   ",
+//   email: "  ayoubyf@gmail.com  ",
+//   password: "        re32asda     ",
+// });
+
+// me.save()
+//   .then(() => console.log(me))
+//   .catch((error) => console.log(error));
+
+const Tasks = mongoose.model("Tasks", {
+  description: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-me.save()
-  .then(() => console.log(me))
+const carWash = new Tasks({
+  description: "   Hello there   ",
+});
+
+carWash
+  .save()
+  .then(() => console.log("Saving the database"))
   .catch((error) => console.log(error));
-
-// const Tasks = mongoose.model("Tasks", {
-//   description: {
-//     type: String,
-//   },
-//   completed: {
-//     type: Boolean,
-//   },
-// });
-
-// const carWash = new Tasks({
-//   description: "Washing the car",
-//   completed: false,
-// });
-
-// carWash
-//   .save()
-//   .then(() => console.log("Saving the database"))
-//   .catch((error) => console.log(error));
