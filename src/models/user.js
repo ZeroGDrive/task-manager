@@ -60,6 +60,18 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
+//cleaning the response from sensitive info
+// here you just modify the JSON data and it will apply everywhere
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.tokens;
+
+  return userObject;
+};
+
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
 
