@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Tasks = require('../models/tasks');
 
 const userSchema = mongoose.Schema({
   name: {
@@ -51,6 +52,13 @@ const userSchema = mongoose.Schema({
   ],
 });
 
+// this one is a virtual one means it wont get saved in the database but it's there and it's used to connect those 2 models
+userSchema.virtual('tasks', {
+  ref: 'Tasks',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse');
@@ -94,6 +102,13 @@ userSchema.pre('save', async function (next) {
     user.password = await bcrypt.hash(user.password, 8);
   }
 
+  next();
+});
+
+//delete user tasks if removed
+userSchema.pre('remove', async function (req, res, next) {
+  const user = this;
+  await Tasks.deleteMany({ owner: user._id });
   next();
 });
 
