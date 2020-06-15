@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const keys = require('../../config/keys');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Tasks = require('../models/tasks');
@@ -51,6 +52,9 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    avatar: {
+      type: Buffer,
+    },
   },
   {
     timestamps: true,
@@ -66,7 +70,7 @@ userSchema.virtual('tasks', {
 
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse');
+  const token = jwt.sign({ _id: user._id.toString() }, keys.jwtSecret);
 
   user.tokens = user.tokens.concat({ token });
   await user.save();

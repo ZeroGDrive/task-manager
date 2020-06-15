@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const keys = require('../../config/keys');
 
-mongoose.connect("mongodb://127.0.0.1:27017/task-manager-api", {
+mongoose.connect(keys.mongodbURI, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
