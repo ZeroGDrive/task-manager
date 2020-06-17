@@ -3,7 +3,7 @@ if (process.env.NODE_ENV === 'production') {
   module.exports = require('./prod');
 } else {
   if (process.env.NODE_ENV === 'test') {
-    module.exports = require('./test');
+    module.exports = require('./jest');
   } else {
     // we are in development - return the dev set of keys
     module.exports = require('./dev');
