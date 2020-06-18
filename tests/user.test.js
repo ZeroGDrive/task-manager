@@ -1,27 +1,9 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const app = require('../src/app');
+const { setupDatabase, user1, user1ID } = require('./fixtures/db');
 const User = require('../src/models/user');
-const mongoose = require('mongoose');
-const keys = require('../config/keys');
 
-const user1ID = new mongoose.Types.ObjectId();
-const user1 = {
-  _id: user1ID,
-  name: 'Ayoub',
-  email: 'ayoubyf3@gmail.com',
-  password: 'hellofromthe',
-  tokens: [
-    {
-      token: jwt.sign({ _id: user1ID }, keys.jwtSecret),
-    },
-  ],
-};
-
-beforeEach(async () => {
-  await User.deleteMany();
-  await new User(user1).save();
-});
+beforeEach(setupDatabase);
 
 test('Should signup a new user', async () => {
   const response = await request(app)
@@ -106,7 +88,7 @@ test('Should upload avatar image', async () => {
     .set('Authorization', `Bearer ${user1.tokens[0].token}`)
     .attach(
       'avatar',
-      'tests/fixtures/92828646_2688717778026430_8123023178218864640_o.jpg',
+      'tests/fixtures/92828646_2688717778026430_8123023178218864640_o.jpg'
     )
     .expect(200);
 
